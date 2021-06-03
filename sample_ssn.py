@@ -10,10 +10,7 @@ def get_ssn_output(local, fileList):
     ssnScores = []
     for file in fileList:
         ssn, score = 0,0
-        if not local:
-            print("need to write fetch from s3")
-        else: 
-            text = s3.get_file_text(local, file)
+        text = s3.get_file_text(local, file)
         if text != "":
             ssn, score = ml.detect_ssn(client, text)
         ssnList.append(ssn)
@@ -26,7 +23,7 @@ def main():
     parser.add_argument('--cl', '-confidence-level', type=float, default=0.95, help="required confidence from the sampling algorithm (default value of 0.5)")
     parser.add_argument('--me', '-margin-error', type=float, default=0.05, help="required margin of error from the sampling algorithm (default value of 0.05)")
     args = parser.parse_args() 
-    local = True
+    local = False
     # count the total sample size 
     num_files, fileList = s3.get_file_count(local, './data/output/')
 
@@ -66,11 +63,12 @@ def main():
     
     measure_a = measure_a / np.sum(ssnList_a)
     measure_b = measure_b / np.sum(ssnList_b)
-    print(measure_a, measure_b)
+    measure = (measure_a + measure_b)/2 
+
     hypothesis = sm.ttest(ssnList_a, ssnList_b, confidence_level)
     if hypothesis:
         print('In ', sample_size, ' number of files, detected ', tot_files, ' files with SSN. With a confidence of ', (100*confidence_level), 'percent and '\
-            ' margin of error being +/-', (100*margin_error),' percent')
+            ' margin of error being +/-', (100*margin_error),' percent. The SSN detection algorithm worked with a confidence of ', (measure*100), ' percent')
     else: 
         print('Unable to give conclusive evidence of SSNs detected. Try increasing the confidence interval or reducing margin of error')
 

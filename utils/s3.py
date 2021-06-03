@@ -37,7 +37,11 @@ def get_subset_files(fileList, num_files):
 
 def get_file_text(local, path):
     if not local:
-        print("need to implement s3 fetch")
+        bucket, key = path.split('/')
+        client = boto3.client('s3')
+        s3_object = client.get_object(Bucket=bucket, Key=key)
+        body = s3_object['Body']
+        return body.read().decode('utf-8')
     else: 
         file = open(path, 'r')
         text = file.read()

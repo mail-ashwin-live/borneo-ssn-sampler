@@ -1,3 +1,4 @@
+detected_results.txt
 data/create_dataset.py
 data/file1.txt
 data/file2.txt
@@ -4997,3 +4998,4 @@ data/file4996.txt
 data/file4997.txt
 data/file4998.txt
 data/file4999.txt
+.DS_Store
