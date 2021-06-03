@@ -13,4 +13,10 @@ def detect_ssn(client, text):
         print("Couldn't detect PII entities.")
         raise
     else:
-        return entities
+        if not entities:
+            return (0,0)
+        for r in entities:
+            if r.get('Type') == 'SSN' and r.get("Score") > 0.85:
+                return (1,r.get("Score"))
+            else:
+                return (0,r.get("Score"))
