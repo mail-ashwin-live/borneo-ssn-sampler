@@ -1,3 +1,5 @@
+data
+utils/__pycache__/
 detected_results.txt
 data/create_dataset.py
 data/file1.txt
